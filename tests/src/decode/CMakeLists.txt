@@ -6,6 +6,10 @@ function(zfp_add_block_tests dims type bits)
   if(HAVE_LIBM_MATH)
     target_link_libraries(${block_test_name} m)
   endif()
+  if(ZFP_WITH_OPENMP)
+    target_link_libraries(${block_test_name} ${OpenMP_C_LIBRARIES})
+  endif()
+
 
   target_compile_definitions(${block_test_name} PRIVATE ${zfp_private_defs})
   if(PRINT_CHECKSUMS)
@@ -21,6 +25,9 @@ function(zfp_add_block_tests dims type bits)
   if(HAVE_LIBM_MATH)
     target_link_libraries(${strided_block_test_name} m)
   endif()
+  if(ZFP_WITH_OPENMP)
+    target_link_libraries(${strided_block_test_name} ${OpenMP_C_LIBRARIES})
+  endif()
 
   target_compile_definitions(${strided_block_test_name} PRIVATE ${zfp_private_defs})
   if(PRINT_CHECKSUMS)
@@ -28,6 +35,7 @@ function(zfp_add_block_tests dims type bits)
   endif()
 
   add_test(NAME ${strided_block_test_name} COMMAND ${strided_block_test_name})
+
 endfunction()
 
 zfp_add_block_tests(1 Int32 32)

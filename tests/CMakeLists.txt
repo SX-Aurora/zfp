@@ -146,6 +146,11 @@ target_link_libraries(testviews zfp)
 target_compile_definitions(testviews PRIVATE ${zfp_compressed_array_defs})
 add_test(NAME testviews COMMAND testviews)
 
+if(ZFP_WITH_OPENMP)
+  target_link_libraries(testzfp ${OpenMP_C_LIBRARIES})
+  target_link_libraries(testviews ${OpenMP_C_LIBRARIES})
+endif()
+
 if(BUILD_ZFPY)
   add_subdirectory(python)
 endif()

@@ -8,6 +8,10 @@ function(zfp_add_cpp_tests dims type bits)
   target_compile_definitions(${test_name} PRIVATE ${zfp_compressed_array_defs})
   add_test(NAME ${test_name} COMMAND ${test_name})
 
+  if(ZFP_WITH_OPENMP)
+    target_link_libraries(${test_name} ${OpenMP_C_LIBRARIES})
+  endif()
+
 endfunction()
 
 zfp_add_cpp_tests(1 f 32)

@@ -9,6 +9,33 @@ if(ZFP_WITH_CUDA)
   add_definitions(-DZFP_WITH_CUDA)
 endif()
 
+if(ZFP_WITH_VE)
+  add_definitions(-DZFP_WITH_VE)
+  set(zfp_ve_source ve_zfp/compress_ve_float_1.c ve_zfp/compress_ve_float_2.c ve_zfp/compress_ve_float_3.c ve_zfp/compress_ve_float_4.c
+                    ve_zfp/decompress_ve_float_1.c ve_zfp/decompress_ve_float_2.c ve_zfp/decompress_ve_float_3.c ve_zfp/decompress_ve_float_4.c
+                    ve_zfp/compress_ve_double_1.c ve_zfp/compress_ve_double_2.c ve_zfp/compress_ve_double_3.c ve_zfp/compress_ve_double_4.c
+                    ve_zfp/decompress_ve_double_1.c ve_zfp/decompress_ve_double_2.c ve_zfp/decompress_ve_double_3.c ve_zfp/decompress_ve_double_4.c)
+  set_source_files_properties(ve_zfp/compress_ve_float_1.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_float_2.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_float_3.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_float_4.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+
+  set_source_files_properties(ve_zfp/decompress_ve_float_1.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_float_2.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_float_3.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_float_4.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+
+  set_source_files_properties(ve_zfp/compress_ve_double_1.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_double_2.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_double_3.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/compress_ve_double_4.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+
+  set_source_files_properties(ve_zfp/decompress_ve_double_1.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_double_2.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_double_3.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+  set_source_files_properties(ve_zfp/decompress_ve_double_4.c PROPERTIES COMPILE_FLAGS "-report-all -finline-functions -finline-max-depth=1 -finline-max-function-size=5000 -msched-interblock")
+endif()
+
 
 set(zfp_source
   zfp.c
@@ -24,7 +51,8 @@ set(zfp_source
   decode4f.c decode4d.c decode4i.c decode4l.c)
 
 add_library(zfp ${zfp_source}
-                ${zfp_cuda_backend_obj})
+                ${zfp_cuda_backend_obj}
+                ${zfp_ve_source})
 add_library(zfp::zfp ALIAS zfp)
 
 if(ZFP_WITH_OPENMP)

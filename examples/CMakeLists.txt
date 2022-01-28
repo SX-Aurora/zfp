@@ -44,3 +44,19 @@ if(HAVE_LIBM_MATH)
   target_link_libraries(ppm m)
   target_link_libraries(simple m)
 endif()
+
+if(ZFP_WITH_OPENMP)
+  target_link_libraries(diffusion ${OpenMP_C_LIBRARIES})
+
+  if(BUILD_CFP)
+    target_link_libraries(diffusionC ${OpenMP_C_LIBRARIES})
+  endif()
+
+  target_link_libraries(inplace ${OpenMP_C_LIBRARIES})
+  target_link_libraries(iterator ${OpenMP_C_LIBRARIES})
+  target_link_libraries(ppm ${OpenMP_C_LIBRARIES})
+  target_link_libraries(pgm ${OpenMP_C_LIBRARIES})
+  target_link_libraries(simple ${OpenMP_C_LIBRARIES})
+  target_link_libraries(speed ${OpenMP_C_LIBRARIES})
+endif()
+

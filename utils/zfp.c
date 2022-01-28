@@ -292,6 +292,8 @@ int main(int argc, char* argv[])
         }
         else if (!strcmp(argv[i], "cuda"))
           exec = zfp_exec_cuda;
+        else if (!strcmp(argv[i], "ve"))
+          exec = zfp_exec_ve;
         else
           usage();
         break;
@@ -473,6 +475,12 @@ int main(int argc, char* argv[])
 
   /* specify execution policy */
   switch (exec) {
+    case zfp_exec_ve:
+      if (!zfp_stream_set_execution(zfp, exec)) {
+        fprintf(stderr, "ve execution not available\n");
+        return EXIT_FAILURE;
+      }
+      break;
     case zfp_exec_cuda:
       if (!zfp_stream_set_execution(zfp, exec)) {
         fprintf(stderr, "cuda execution not available\n");

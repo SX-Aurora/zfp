@@ -10,6 +10,10 @@ if(HAVE_LIBM_MATH)
   target_link_libraries(zfpcmd m)
 endif()
 
+if(ZFP_WITH_OPENMP)
+  target_link_libraries(zfpcmd ${OpenMP_C_LIBRARIES})
+endif()
+
 if(BUILD_UTILITIES)
   install(TARGETS zfpcmd
     DESTINATION "${CMAKE_INSTALL_BINDIR}")

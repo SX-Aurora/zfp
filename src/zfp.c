@@ -6,6 +6,9 @@
 #include "zfp/macros.h"
 #include "zfp/version.h"
 #include "template/template.h"
+#ifdef ZFP_WITH_VE
+#include "ve_zfp/ve_functions.h"
+#endif
 
 /* public data ------------------------------------------------------------- */
 
@@ -756,6 +759,10 @@ zfp_stream_set_rate(zfp_stream* zfp, double rate, zfp_type type, uint dims, zfp_
     default:
       break;
   }
+#ifdef ZFP_WITH_VE
+  // Force alignement on stream word size for NEC SX-Aurora TSUBASA.
+  align = 1;
+#endif
   if (align) {
     /* for write random access, round up to next multiple of stream word size */
     bits += (uint)stream_word_bits - 1;
@@ -901,6 +908,10 @@ zfp_stream_set_execution(zfp_stream* zfp, zfp_exec_policy policy)
   switch (policy) {
     case zfp_exec_serial:
       break;
+#ifdef ZFP_WITH_VE
+    case zfp_exec_ve:
+      break;
+#endif
 #ifdef ZFP_WITH_CUDA
     case zfp_exec_cuda:
       break;
@@ -1020,7 +1031,7 @@ size_t
 zfp_compress(zfp_stream* zfp, const zfp_field* field)
 {
   /* function table [execution][strided][dimensionality][scalar type] */
-  void (*ftable[3][2][4][4])(zfp_stream*, const zfp_field*) = {
+  void (*ftable[4][2][4][4])(zfp_stream*, const zfp_field*) = {
     /* serial */
     {{{ compress_int32_1,         compress_int64_1,         compress_float_1,         compress_double_1 },
       { compress_strided_int32_2, compress_strided_int64_2, compress_strided_float_2, compress_strided_double_2 },
@@ -1058,6 +1069,20 @@ zfp_compress(zfp_stream* zfp, const zfp_field* field)
 #else
     {{{ NULL }}},
 #endif
+
+    /* NEC SX-Aurora TSUBASA Vector parallel version */
+#ifdef ZFP_WITH_VE
+    {{{ compress_int32_1,         compress_int64_1,         compress_ve_float_1, compress_ve_double_1 },
+      { compress_strided_int32_2, compress_strided_int64_2, compress_ve_float_2, compress_ve_double_2 },
+      { compress_strided_int32_3, compress_strided_int64_3, compress_ve_float_3, compress_ve_double_3 },
+      { compress_strided_int32_4, compress_strided_int64_4, compress_ve_float_4, compress_ve_double_4 }},
+     {{ compress_strided_int32_1, compress_strided_int64_1, compress_ve_float_1, compress_ve_double_1 },
+      { compress_strided_int32_2, compress_strided_int64_2, compress_ve_float_2, compress_ve_double_2 },
+      { compress_strided_int32_3, compress_strided_int64_3, compress_ve_float_3, compress_ve_double_3 },
+      { compress_strided_int32_4, compress_strided_int64_4, compress_ve_float_4, compress_ve_double_4 }}},
+#else
+    {{{ NULL }}},
+#endif
   };
   uint exec = zfp->exec.policy;
   uint strided = zfp_field_stride(field, NULL);
@@ -1091,7 +1116,7 @@ size_t
 zfp_decompress(zfp_stream* zfp, zfp_field* field)
 {
   /* function table [execution][strided][dimensionality][scalar type] */
-  void (*ftable[3][2][4][4])(zfp_stream*, zfp_field*) = {
+  void (*ftable[4][2][4][4])(zfp_stream*, zfp_field*) = {
     /* serial */
     {{{ decompress_int32_1,         decompress_int64_1,         decompress_float_1,         decompress_double_1 },
       { decompress_strided_int32_2, decompress_strided_int64_2, decompress_strided_float_2, decompress_strided_double_2 },
@@ -1115,6 +1140,20 @@ zfp_decompress(zfp_stream* zfp, zfp_field* field)
       { decompress_strided_cuda_int32_2, decompress_strided_cuda_int64_2, decompress_strided_cuda_float_2, decompress_strided_cuda_double_2 },
       { decompress_strided_cuda_int32_3, decompress_strided_cuda_int64_3, decompress_strided_cuda_float_3, decompress_strided_cuda_double_3 },
       { NULL,                            NULL,                            NULL,                            NULL }}},
+#else
+    {{{ NULL }}},
+#endif
+
+    /* NEC SX-Aurora TSUBASA Vector parallel version */
+#ifdef ZFP_WITH_VE
+    {{{ decompress_int32_1,         decompress_int64_1,         decompress_ve_float_1, decompress_ve_double_1 },
+      { decompress_strided_int32_2, decompress_strided_int64_2, decompress_ve_float_2, decompress_ve_double_2 },
+      { decompress_strided_int32_3, decompress_strided_int64_3, decompress_ve_float_3, decompress_ve_double_3 },
+      { decompress_strided_int32_4, decompress_strided_int64_4, decompress_ve_float_4, decompress_ve_double_4 }},
+     {{ decompress_strided_int32_1, decompress_strided_int64_1, decompress_ve_float_1, decompress_ve_double_1 },
+      { decompress_strided_int32_2, decompress_strided_int64_2, decompress_ve_float_2, decompress_ve_double_2 },
+      { decompress_strided_int32_3, decompress_strided_int64_3, decompress_ve_float_3, decompress_ve_double_3 },
+      { decompress_strided_int32_4, decompress_strided_int64_4, decompress_ve_float_4, decompress_ve_double_4 }}},
 #else
     {{{ NULL }}},
 #endif

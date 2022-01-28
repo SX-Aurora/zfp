@@ -9,3 +9,10 @@ add_test(NAME testBitstreamSmallWsize COMMAND testBitstreamSmallWsize)
 add_executable(testBitstreamStrided testBitstreamStrided.c)
 target_link_libraries(testBitstreamStrided cmocka)
 add_test(NAME testBitstreamStrided COMMAND testBitstreamStrided)
+
+if(ZFP_WITH_OPENMP)
+  target_link_libraries(testBitstream ${OpenMP_C_LIBRARIES})
+  target_link_libraries(testBitstreamSmallWsize ${OpenMP_C_LIBRARIES})
+  target_link_libraries(testBitstreamStrided ${OpenMP_C_LIBRARIES})
+endif()
+
