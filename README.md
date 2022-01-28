@@ -1,3 +1,31 @@
+This is ZFP fork of https://github.com/LLNL/zfp with support of NEC SX-Aurora TSUBASA. Compression and decompression have been optimized for 1D,2D,3D and 4D arrays of type FP32 and FP64. Only fix bit rate mode is supported.
+
+Compilation of the library requires [CMake](https://cmake.org/). To be able to compile tests, [CMake-VE](https://github.com/SX-Aurora/cmake/tree/nec-support/) is required.
+
+    $ git clone https://github.com/LLNL/zfp.git
+    $ export PATH=/opt/nec/ve/bin:/usr/local/ve/cmake-ve-3.20.2/bin:${PATH}
+    $ cd zfp
+    $ mkdir build
+    $ cd build
+    $ export CC=ncc
+    $ export CXX=nc++
+
+    # To compile with the tests
+    $ cmake -DCMAKE_CXX_STANDARD=14 -DBUILD_EXAMPLES=ON -DZFP_WITH_VE=ON ../zfp
+
+    # or to compile without the tests:
+    $ cmake -DCMAKE_CXX_STANDARD=14 -DBUILD_EXAMPLES=ON -DBUILD_TESTING=OFF -DZFP_WITH_VE=ON ../zfp
+
+    $ make -j
+
+
+The library is compiled to run natively on NEC SX-Aurora TSUBASA, with support of following execution policies:
+- zfp_exec_serial: serial execution, no vectorization.
+- zfp_exec_omp: OpenMP multi-threaded execution, no vectorization.
+- zfp_exec_ve: OpenMP multi-threaded execution with vectorization. If compiled with -DZFP_WITH_OPENMP=OFF, then run with vectorization only.
+
+
+
 ZFP
 ===
 [![Github Actions Build Status](https://github.com/LLNL/zfp/actions/workflows/main.yml/badge.svg?branch=develop)](https://github.com/LLNL/zfp/actions/workflows/main.yml)
