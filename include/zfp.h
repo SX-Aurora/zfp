@@ -69,7 +69,7 @@ typedef enum {
   zfp_exec_serial = 0, /* serial execution (default) */
   zfp_exec_omp    = 1, /* OpenMP multi-threaded execution */
   zfp_exec_cuda   = 2, /* CUDA parallel execution */
-  zfp_exec_ve     = 3  /* NEC SX-Aurora TSUBASA vector parallel execution */
+  zfp_exec_ve     = 5  /* NEC SX-Aurora TSUBASA vector parallel execution */
 } zfp_exec_policy;
 
 /* OpenMP execution parameters */
